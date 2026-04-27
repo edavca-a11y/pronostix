@@ -38,7 +38,7 @@ const conectar = async () => {
 
   const { finalPayload } = await MiniKit.commandsAsync.verify({
     action: "login-pronostix",
-    verification_level: "orb",
+verification_level: "device" as any,
   });
 
   if (finalPayload.status === "success") {
