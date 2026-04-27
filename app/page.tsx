@@ -27,9 +27,24 @@ export default function Home() {
       .catch(() => setCargando(false));
   }, []);
 
-  const conectar = () => {
-    setUsuario("0x1234...abcd");
-  };
+const conectar = async () => {
+  if (typeof window === "undefined") return;
+  const { MiniKit } = await import("@worldcoin/minikit-js");
+  
+  if (!MiniKit.isInstalled()) {
+    alert("Abre PronostiX dentro de World App para verificarte");
+    return;
+  }
+
+  const { finalPayload } = await MiniKit.commandsAsync.verify({
+    action: "login-pronostix",
+    verification_level: "orb",
+  });
+
+  if (finalPayload.status === "success") {
+    setUsuario(finalPayload.nullifier_hash.slice(0, 10) + "...");
+  }
+};
 
   const elegir = (id: number, opcion: string) => {
     if (!usuario) {
