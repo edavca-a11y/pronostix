@@ -71,7 +71,19 @@ export default function Home() {
       .catch(() => setCargando(false));
 
     const saved = localStorage.getItem("pronostix-historial");
-    if (saved) setHistorial(JSON.parse(saved));
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const fixed = parsed.map((a: any) => ({
+          ...a,
+          monto: parseFloat(a.monto) || 0,
+          potencial: parseFloat(a.potencial) || 0,
+        }));
+        setHistorial(fixed);
+      } catch (e) {
+        localStorage.removeItem("pronostix-historial");
+      }
+    }
   }, []);
 
   const calcularCuota = (partidoId: number, tipo: string): number => {
